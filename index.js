@@ -10,29 +10,30 @@ var MPlayer = function() {
         volume: 0
     };
 
-    this.player.on('ready', function() {
-        console.log('ready')
-    });
+    this.player.once('ready', function() {
+        this.emit('ready');
+    }.bind(this));
 
     this.player.on('statuschange', function(status) {
         this.status = _.extend(this.status, status);
+        this.emit('status', this.status);
     }.bind(this));
 
     this.player.on('playstart', function() {
-        console.log('play start')
-    });
+        this.emit('play');
+    }.bind(this));
 
     this.player.on('playstop', function() {
-        console.log('play stop')
-    });
+        this.emit('stop')
+    }.bind(this));
 
     this.player.on('timechange', function(time) {
         this.status.position = time;
-        //console.log('time change', time)
+        this.emit('time', time);
     }.bind(this));
 };
 
-MPlayer.prototype = {
+MPlayer.prototype = _.extend({
     open: function(file) {
         this.player.cmd('loadfile', [file]);
         this.playing = true;
@@ -95,6 +96,6 @@ MPlayer.prototype = {
     adjustAudio: function(seconds) {
         this.player.cmd('audio_delay', [seconds]);
     }
-};
+}, EventEmitter);
 
 module.exports = MPlayer;
