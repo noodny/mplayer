@@ -20,14 +20,28 @@ var MPlayer = function() {
     }.bind(this));
 
     this.player.on('playstart', function() {
-        this.emit('play');
+        this.emit('start');
     }.bind(this));
 
     this.player.on('playstop', function() {
         this.emit('stop')
     }.bind(this));
 
+    var pauseTimeout,
+        paused = false;
+
     this.player.on('timechange', function(time) {
+        clearTimeout(pauseTimeout);
+        pauseTimeout = setTimeout(function() {
+            paused = true;
+            this.status.playing = false;
+            this.emit('pause');
+        }.bind(this), 100);
+        if(paused) {
+            paused = false;
+            this.status.playing = true;
+            this.emit('play')
+        }
         this.status.position = time;
         this.emit('time', time);
     }.bind(this));
