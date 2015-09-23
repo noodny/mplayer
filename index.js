@@ -48,8 +48,21 @@ var MPlayer = function() {
 };
 
 MPlayer.prototype = _.extend({
-    open: function(file) {
-        this.player.cmd('loadfile', [file]);
+    open: function(file, options) {
+        this.player.cmd('stop');
+
+        if(options && options.length) {
+            options.forEach(function(value, key) {
+                this.player.cmd('set_property', [key, value]);
+            }.bind(this));
+        }
+
+        if(options && options.playlist) {
+            this.player.cmd('loadlist', [file]);
+        } else {
+            this.player.cmd('loadfile', [file]);
+        }
+
         this.playing = true;
         this.status.playing = true;
         this.status.volume = 100;
