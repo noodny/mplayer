@@ -87,7 +87,7 @@ MPlayer.prototype = _.extend({
         this.player.cmd('stop');
 
         this.setOptions(options);
-        this.player.cmd('loadfile', [file]);
+        this.player.cmd('loadfile', ['"' + file + '"']);
 
         this.status.playing = true;
     },
@@ -95,7 +95,7 @@ MPlayer.prototype = _.extend({
         this.player.cmd('stop');
 
         this.setOptions(options);
-        this.player.cmd('loadlist', [file]);
+        this.player.cmd('loadlist', ['"' + file + '"']);
 
         this.status.playing = true;
     },
