@@ -1,6 +1,6 @@
 {
     "name": "mplayer",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "description": "Node.js wrapper for mplayer",
     "main": "index.js",
     "scripts": {

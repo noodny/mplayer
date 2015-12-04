@@ -1,11 +1,17 @@
-var MPlayer = require(__dirname + '/index.js');
+var MPlayer = require('./index.js');
 
-var Player = new MPlayer({
-    verbose: false,
-    debug: false
+var player = new MPlayer({
+    debug: true
 });
 
-Player.openPlaylist('http://www.miastomuzyki.pl/n/rmfclassic.pls', {
+player.on('start', console.log.bind(this, 'playback started'));
+player.on('status', console.log);
+
+
+player.openPlaylist('http://www.miastomuzyki.pl/n/rmfclassic.pls', {
     cache: 128,
     cacheMin: 1
 });
+
+setTimeout(player.volume.bind(player, 50), 1000);
+
