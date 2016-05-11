@@ -25,6 +25,10 @@ You may want to pass in an object with options allowing for better debugging
 * *verbose* (Boolean): `true`, `false` - if set to true all player events will be logged to console
 * *debug* (Boolean): `true`, `false` - log mplayer `stdout`, `stderr` streams directly to console, along with everything written to `stdin` stream
 
+or passing additional options to the spawned mplayer instance
+
+* *args* (String|Array): - list of additional parameters which will be passed to the command line mplayer instance (see mplayer manual for more details)
+
 After this you will have access to all player methods and events.
 The player instance uses node's native [EventEmitter](https://nodejs.org/api/events.html#events_class_events_eventemitter) for events management.
 
@@ -126,6 +130,9 @@ player.openPlaylist('http://www.miastomuzyki.pl/n/rmfclassic.pls', {
 setTimeout(player.volume.bind(player, 50), 1000);
 ```
 # Changelog
+### 2.1.0
+* Allow for passing additional arguments to the spawned mplayer instance [Thanks @efernandesng](https://github.com/noodny/mplayer/pull/3)
+
 ### 2.0.1
 * Add documentation
 * Add quotes to the filename [Thanks @hugo-agbonon](https://github.com/noodny/mplayer/pull/2)
