@@ -94,7 +94,7 @@ player.openPlaylist('http://www.radio.com/radio-stream.pls', {
 * **start** - triggered once an asset playback has started
 * **play** - triggered when playback is resumed
 * **pause** - triggered when playback is paused
-* **stop** - triggered when an asset has finished playing
+* **stop** - < Number > EOF code - triggered when an asset has finished playing
 * **status** < Object > status - triggered whenever player status changes
 The `status` object has the following properties:
 ```javascript
