@@ -114,6 +114,12 @@ MPlayer.prototype = _.extend({
     stop: function() {
         this.player.cmd('stop');
     },
+    next: function() {
+        this.player.cmd('pt_step 1');
+    },
+    previous: function() {
+        this.player.cmd('pt_step -1');
+    },
     seek: function(seconds) {
         this.player.cmd('seek', [seconds, 2]);
     },
