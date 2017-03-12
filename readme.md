@@ -74,6 +74,8 @@ player.openPlaylist('http://www.radio.com/radio-stream.pls', {
 * **play**( )
 * **pause**( )
 * **stop**( )
+* **next**( )
+* **previous**( )
 * **seek**(< Number > seconds) - seek to a specific second
 * **seekPercent**(< Number > percent ) - seek to a percent position of a file
 * **volume**(< Number > percent ) - set volume to a given percentage
