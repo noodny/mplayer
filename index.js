@@ -39,11 +39,11 @@ var MPlayer = function(options) {
         this.emit('start');
     }.bind(this));
 
-    this.player.on('playstop', function() {
+    this.player.on('playstop', function(code) {
         if(options.verbose) {
-            console.log('player.stop');
+            console.log('player.stop', code);
         }
-        this.emit('stop')
+        this.emit('stop', code)
     }.bind(this));
 
     var pauseTimeout,
