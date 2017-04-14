@@ -113,6 +113,7 @@ MPlayer.prototype = _.extend({
     },
     stop: function() {
         this.player.cmd('stop');
+        this.status.playing = false;
     },
     next: function() {
         this.player.cmd('pt_step 1');
