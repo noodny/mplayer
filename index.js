@@ -131,6 +131,9 @@ MPlayer.prototype = _.extend({
         this.status.volume = percent;
         this.player.cmd('volume', [percent, 1]);
     },
+    speedFactor: function(factor) {
+        this.player.cmd('speed_mult', factor);
+    },
     mute: function() {
         this.status.muted = !this.status.muted;
         this.player.cmd('mute');
