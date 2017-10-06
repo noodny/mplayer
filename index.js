@@ -77,9 +77,9 @@ var MPlayer = function(options) {
 
 MPlayer.prototype = _.extend({
     setOptions: function(options) {
-        if(options && options.length) {
-            options.forEach(function(value, key) {
-                this.player.cmd('set_property', [key, value]);
+        if(options && Object.keys(options).length) {
+          Object.keys(options).forEach(function(key) {
+                this.player.cmd('set_property', [key, options[key]]);
             }.bind(this));
         }
     },
