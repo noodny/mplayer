@@ -1,13 +1,24 @@
-var Player = require('./lib/player'),
-    EventEmitter = require('events').EventEmitter.prototype,
-    _ = require('lodash');
+const Player = require('./lib/player');
+const EventEmitter = require('events').EventEmitter.prototype;
+const _ = require('lodash');
 
-var defaults = {
+const defaults = {
     verbose: false,
     debug: false
 };
 
-var MPlayer = function(options) {
+/**
+ * @typedef {Object} MPlayerOptions 
+ * @property {Boolean} options.verbose
+ * @property {Boolean} options.debug
+ * @property {string | string[]} options.args
+ */
+
+/**
+ * 
+ * @param {MPlayerOptions} options 
+ */
+const MPlayer = function(options) {
     options = _.defaults(options || {}, defaults);
 
     this.player = new Player(options);
