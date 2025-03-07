@@ -4,7 +4,7 @@
     "description": "Node.js wrapper for mplayer",
     "main": "index.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "node --test"
     },
     "repository": {
         "type": "git",
@@ -21,8 +21,5 @@
     "bugs": {
         "url": "https://github.com/noodny/mplayer/issues"
     },
-    "homepage": "https://github.com/noodny/mplayer",
-    "dependencies": {
-        "lodash": "^2.4.1"
-    }
+    "homepage": "https://github.com/noodny/mplayer"
 }
