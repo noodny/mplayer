@@ -1,116 +1,103 @@
+const { EventEmitter } = require("node:events");
 const Player = require("./lib/player");
-const EventEmitter = require("events").EventEmitter;
+const {
+    PLAYER_EVENT_READY,
+    PLAYER_EVENT_PLAY_START,
+    PLAYER_EVENT_PLAY_STOP,
+    PLAYER_EVENT_STATUS_CHANGE,
+    PLAYER_EVENT_TIME_CHANGE,
+} = require("./consts");
 
-const defaults = {
+const defaultOptions = {
     verbose: false,
     debug: false,
 };
 
-/**
- * @typedef {Object} MPlayerOptions
- * @property {Boolean} options.verbose
- * @property {Boolean} options.debug
- * @property {string | string[]} options.args
- */
+const defaultStatus = {
+    muted: false,
+    playing: false,
+    volume: 0,
+};
 
-/**
- *
- * @param {MPlayerOptions} options
- */
 class MPlayer extends EventEmitter {
+    /**
+     * @type {MPlayerOptions}
+     */
+    options = {};
+
+    /**
+     * @type {MPlayerStatus}
+     */
+    status = {};
+
+    /**
+     * @param {MPlayerOptions} options
+     */
     constructor(options) {
         super();
-        options = { ...defaults, ...options };
+        this.options = { ...defaultOptions, ...options };
 
-        this.player = new Player(options);
+        this.player = new Player({
+            debug: this.options.debug,
+            args: this.options.args,
+        });
+
         this.status = {
-            muted: false,
-            playing: false,
-            volume: 0,
+            ...defaultStatus,
         };
 
-        this.player.once(
-            "ready",
-            function () {
-                if (options.verbose) {
-                    console.log("player.ready");
-                }
-                this.emit("ready");
-            }.bind(this)
-        );
+        this.player.once(PLAYER_EVENT_READY, () => {
+            this.log("player.ready");
+            this.emit("ready");
+        });
 
-        this.player.on(
-            "statuschange",
-            function (status) {
-                this.status = { ...this.status, status };
-                if (options.verbose) {
-                    console.log("player.status", this.status);
-                }
-                this.emit("status", this.status);
-            }.bind(this)
-        );
+        this.player.on(PLAYER_EVENT_STATUS_CHANGE, (status) => {
+            this.status = { ...this.status, ...status };
+            this.log("player.status", this.status);
+            this.emit("status", this.status);
+        });
 
-        this.player.on(
-            "playstart",
-            function () {
-                if (options.verbose) {
-                    console.log("player.start");
-                }
-                this.emit("start");
-            }.bind(this)
-        );
+        this.player.on(PLAYER_EVENT_PLAY_START, () => {
+            this.log("player.start");
+            this.emit("start");
+        });
 
-        this.player.on(
-            "playstop",
-            function (code) {
-                if (options.verbose) {
-                    console.log("player.stop", code);
-                }
-                this.emit("stop", code);
-            }.bind(this)
-        );
+        this.player.on(PLAYER_EVENT_PLAY_STOP, (code) => {
+            this.log("player.stop", code);
+            this.emit("stop", code);
+        });
 
         let pauseTimeout;
         let paused = false;
 
-        this.player.on(
-            "timechange",
-            function (time) {
-                clearTimeout(pauseTimeout);
-                pauseTimeout = setTimeout(
-                    function () {
-                        paused = true;
-                        this.status.playing = false;
-                        this.emit("pause");
-                        if (options.verbose) {
-                            console.log("player.pause");
-                        }
-                    }.bind(this),
-                    100
-                );
-                if (paused) {
-                    paused = false;
-                    this.status.playing = true;
-                    this.emit("play");
-                    if (options.verbose) {
-                        console.log("player.play");
-                    }
-                }
-                this.status.position = time;
-                this.emit("time", time);
-                if (options.verbose) {
-                    console.log("player.time", time);
-                }
-            }.bind(this)
-        );
+        this.player.on(PLAYER_EVENT_TIME_CHANGE, (time) => {
+            clearTimeout(pauseTimeout);
+
+            // if no timechange event is triggered within 100ms, we assume the player is paused
+            pauseTimeout = setTimeout(() => {
+                paused = true;
+                this.status.playing = false;
+                this.emit("pause");
+                this.log("player.pause");
+            }, 100);
+
+            if (paused) {
+                paused = false;
+                this.status.playing = true;
+                this.emit("play");
+                this.log("player.play");
+            }
+
+            this.status.position = time;
+            this.emit("time", time);
+            this.log("player.time", time);
+        });
     }
 
     setOptions(options) {
-        if (options && options.length) {
-            options.forEach(
-                function (value, key) {
-                    this.player.cmd("set_property", [key, value]);
-                }.bind(this)
+        if (options && Object.keys(options).length) {
+            options.forEach((value, key) =>
+                this.player.cmd("set_property", [key, value])
             );
         }
     }
@@ -209,6 +196,12 @@ class MPlayer extends EventEmitter {
 
     adjustAudio(seconds) {
         this.player.cmd("audio_delay", [seconds]);
+    }
+
+    log(message) {
+        if (this.options.verbose) {
+            console.log(message);
+        }
     }
 }
 
